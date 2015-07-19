@@ -1,0 +1,71 @@
+mkdir -p /home/redmine/data/repo/
+chown redmine:redmine /home/redmine/data/repo/
+chmod 0755 /home/redmine/data/repo/
+
+cd ${INSTALL_DIR}
+cat > config/scm.yml <<EOF
+production:
+  deny_delete: false
+  auto_create: false
+  force_repository: false
+  pre_create: /usr/local/bin/pre-create.sh
+  post_create: /usr/local/bin/post-create.sh
+  pre_delete: /usr/local/bin/pre-delete.sh
+  post_delete: /usr/local/bin/post-delete.sh
+  max_repos: 0
+  only_creator: false
+  allow_add_local: false
+  allow_pickup: false
+  svn:
+    path: /home/redmine/data/repo/
+    svnadmin: /usr/bin/svnadmin
+    url: svn
+  git:
+    path: /home/redmine/data/repo/
+    git: /usr/bin/git
+    options: --bare
+    url: https://redmine.sun-its.com:30445
+    update_server_info: true
+    git_ext: false
+    append: trunk
+  mercurial:
+    path: /home/redmine/data/repo/
+    hg: /usr/bin/hg
+  bazaar:
+    path: /home/redmine/data/repo/
+    bzr: /usr/bin/bzr
+    init: init-repository
+    log_encoding: UTF-8
+  github:
+    path: /home/redmine/data/repo/
+    api:
+      token: 36857b
+      register_hook: true
+
+development:
+EOF
+chown redmine:redmine scm.yml
+
+gem install nokogiri -v '1.6.5'
+gem install xpath -v '2.0.0'
+gem install capybara -v '2.1.0'
+gem install ffi -v '1.9.6'
+gem install childprocess -v '0.5.5'
+gem install coderay -v '1.1.0'
+gem install dalli -v '2.7.2'
+gem install rack-ssl -v '1.3.4'
+gem install rdoc -v '3.12.2'
+gem install thor -v '0.19.1'
+gem install railties -v '3.2.19'
+gem install jquery-rails -v '3.1.2'
+gem install kgio -v '2.9.2'
+gem install metaclass -v '0.0.4'
+gem install  mocha -v '1.0.0'
+
+
+cd plugins
+wget http://projects.andriylesyuk.com/attachments/download/563/redmine_scm-0.5.0b.tar.bz2
+tar jxvf redmine_scm-0.5.0b.tar.bz2
+rm -rf redmine_scm-0.5.0b.tar.bz2
+chown -R redmine:redmine redmine_scm
+cd ../
