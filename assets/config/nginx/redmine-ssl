@@ -65,10 +65,17 @@ server {
   access_log  /var/log/redmine/nginx/redmine_access.log;
   error_log   /var/log/redmine/nginx/redmine_error.log;
 
+  location {{REDMINE_RELATIVE_URL_ROOT}}github_hook {
+    try_files $uri $uri/index.html $uri.html @redmine;
+  }
+
   location {{REDMINE_RELATIVE_URL_ROOT}} {
     # alias {{INSTALL_DIR}}/public;
     ## Serve static files from defined root folder.
     ## @redmine is a named location for the upstream fallback, see below.
+    if ($ssl_client_verify != SUCCESS) {
+      return 403;
+    }
     try_files $uri $uri/index.html $uri.html @redmine;
   }
 
